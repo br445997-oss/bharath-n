@@ -47,39 +47,55 @@ function show(g){
  document.getElementById(g).classList.remove('hidden');
 }
 
-// CAR GAME
+// CAR GAME (with lanes + better graphics)
 const c = document.getElementById('carGame');
 const ctx = c.getContext('2d');
+
 let carX = 140;
-let obstacles = [{x:100,y:0}];
+let speed = 5;
+let keys = { left:false, right:false };
+let obstacles = [{x:100,y:-40},{x:180,y:-200}];
+let score = 0;
+
+function drawRoad(){
+  // road
+  ctx.fillStyle = '#222';
+  ctx.fillRect(0,0,300,400);
+
+  // side grass
+  ctx.fillStyle = '#14532d';
+  ctx.fillRect(0,0,40,400);
+  ctx.fillRect(260,0,40,400);
+
+  // lane dashed lines
+  ctx.strokeStyle = 'white';
+  ctx.lineWidth = 4;
+  ctx.setLineDash([20,15]);
+  ctx.beginPath();
+  ctx.moveTo(150,0);
+  ctx.lineTo(150,400);
+  ctx.stroke();
+  ctx.setLineDash([]);
+}
 
 function drawCar(){
- ctx.fillStyle='red';
- ctx.fillRect(carX,350,20,40);
+  ctx.fillStyle = '#ef4444';
+  ctx.fillRect(carX,340,20,40);
+  // windshield
+  ctx.fillStyle = '#93c5fd';
+  ctx.fillRect(carX+3,345,14,10);
 }
 
 function drawObstacles(){
- ctx.fillStyle='white';
- obstacles.forEach(o=>{
-  ctx.fillRect(o.x,o.y,20,20);
-  o.y+=5;
- });
-}
+  ctx.fillStyle = '#facc15';
+  obstacles.forEach(o=>{
+    ctx.fillRect(o.x,o.y,20,40);
+    o.y += 4;
 
-function gameLoop(){
- ctx.clearRect(0,0,300,400);
- drawCar();
- drawObstacles();
- requestAnimationFrame(gameLoop);
-}
-gameLoop();
-
-document.addEventListener('keydown',e=>{
- if(e.key==='ArrowLeft') carX-=20;
- if(e.key==='ArrowRight') carX+=20;
-});
-
-// SNAKE
+    // respawn
+    if(o.y > 420){
+      o.y = -60;
+      o.x =
 const sCanvas = document.getElementById('snakeGame');
 const sctx = sCanvas.getContext('2d');
 let snake=[{x:150,y:150}],dx=10,dy=0,food={x:50,y:50};
