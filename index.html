@@ -95,7 +95,77 @@ function drawObstacles(){
     // respawn
     if(o.y > 420){
       o.y = -60;
-      o.x =
+      o.x = 60 + Math.floor(Math.random()*160);
+      score++;
+    }
+
+    // collision
+    if(carX < o.x+20 && carX+20 > o.x && 340 < o.y+40 && 380 > o.y){
+      alert('💥 Game Over! Score: '+score);
+      document.location.reload();
+    }
+  });
+}
+
+function drawScore(){
+  ctx.fillStyle='white';
+  ctx.font='16px Arial';
+  ctx.fillText('Score: '+score, 10, 20);
+}
+
+function update(){
+  if(keys.left && carX > 40) carX -= speed;
+  if(keys.right && carX < 240) carX += speed;
+}
+
+function gameLoop(){
+  ctx.clearRect(0,0,300,400);
+  drawRoad();
+  update();
+  drawCar();
+  drawObstacles();
+  drawScore();
+  requestAnimationFrame(gameLoop);
+}
+gameLoop();
+
+document.addEventListener('keydown', e=>{
+  if(e.key==='ArrowLeft') keys.left=true;
+  if(e.key==='ArrowRight') keys.right=true;
+});
+
+document.addEventListener('keyup', e=>{
+  if(e.key==='ArrowLeft') keys.left=false;
+  if(e.key==='ArrowRight') keys.right=false;
+});
+
+// Mobile Touch Controls
+let touchStartX = null;
+
+document.addEventListener('touchstart', e => {
+  touchStartX = e.touches[0].clientX;
+});
+
+document.addEventListener('touchmove', e => {
+  if(!touchStartX) return;
+  let touchEndX = e.touches[0].clientX;
+
+  if(touchEndX < touchStartX){
+    keys.left = true;
+    keys.right = false;
+  } else {
+    keys.right = true;
+    keys.left = false;
+  }
+});
+
+document.addEventListener('touchend', () => {
+  keys.left = false;
+  keys.right = false;
+  touchStartX = null;
+});
+
+// SNAKE
 const sCanvas = document.getElementById('snakeGame');
 const sctx = sCanvas.getContext('2d');
 let snake=[{x:150,y:150}],dx=10,dy=0,food={x:50,y:50};
